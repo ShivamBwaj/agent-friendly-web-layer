@@ -1,0 +1,18 @@
+<%- include('layout_top', { title: 'Compare' }) %>
+
+<h1>Compare events</h1>
+
+<% if (events.length < 2) { %>
+  <p class="error">Select at least two events on the <a href="/events">events page</a> to compare.</p>
+<% } else { %>
+<table>
+  <tr><th>Field</th><% events.forEach(function(e) { %><th><%= e.title %></th><% }); %></tr>
+  <tr><td>Category</td><% events.forEach(function(e) { %><td><%= e.category %></td><% }); %></tr>
+  <tr><td>Venue</td><% events.forEach(function(e) { %><td><%= e.venue %></td><% }); %></tr>
+  <tr><td>Date</td><% events.forEach(function(e) { %><td><%= e.date %></td><% }); %></tr>
+  <tr><td>Price</td><% events.forEach(function(e) { %><td>$<%= e.price %></td><% }); %></tr>
+  <tr><td>Seats left</td><% events.forEach(function(e) { %><td><%= e.seatsAvailable %></td><% }); %></tr>
+</table>
+<% } %>
+
+<%- include('layout_bottom') %>

@@ -1,0 +1,33 @@
+<%- include('layout_top', { title: 'My bookings' }) %>
+
+<h1>My bookings</h1>
+
+<fieldset>
+  <legend>Look up by name</legend>
+  <form action="/bookings" method="get">
+    <input type="text" name="name" value="<%= name || '' %>" placeholder="Your name">
+    <button type="submit">Show bookings</button>
+  </form>
+</fieldset>
+
+<% if (error) { %><p class="error"><%= error %></p><% } %>
+
+<% bookings.forEach(function(b) { %>
+  <div class="event">
+    <strong>Booking #<%= b.id %></strong> — <%= b.event ? b.event.title : 'unknown event' %>
+    — <%= b.seats %> seat(s) — status: <%= b.status %>
+    <% if (b.status === 'confirmed') { %>
+      <form action="/bookings/<%= b.id %>/update" method="post" style="display:inline">
+        <input type="hidden" name="name" value="<%= name %>">
+        <label>New seat count: <input type="number" name="seats" min="1" value="<%= b.seats %>" style="width:60px"></label>
+        <button type="submit">Update</button>
+      </form>
+      <form action="/bookings/<%= b.id %>/cancel" method="post" style="display:inline">
+        <input type="hidden" name="name" value="<%= name %>">
+        <button type="submit">Cancel</button>
+      </form>
+    <% } %>
+  </div>
+<% }); %>
+
+<%- include('layout_bottom') %>

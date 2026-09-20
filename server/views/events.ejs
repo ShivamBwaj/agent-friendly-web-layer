@@ -1,0 +1,20 @@
+<%- include('layout_top', { title: 'Events' }) %>
+
+<h1>Events</h1>
+
+<form action="/compare" method="get">
+  <% events.forEach(function(e) { %>
+    <div class="event">
+      <input type="checkbox" name="ids" value="<%= e.id %>" form="compareform">
+      <strong><a href="/events/<%= e.id %>"><%= e.title %></a></strong>
+      <span class="muted">(<%= e.category %>)</span><br>
+      <%= e.venue %> — <%= e.date %> — <span class="price">$<%= e.price %></span>
+      — <%= e.seatsAvailable %> seats left
+    </div>
+  <% }); %>
+</form>
+<form id="compareform" action="/compare" method="get">
+  <button type="submit">Compare selected</button>
+</form>
+
+<%- include('layout_bottom') %>

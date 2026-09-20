@@ -1,0 +1,18 @@
+<%- include('layout_top', { title: event.title }) %>
+
+<h1><%= event.title %></h1>
+<p class="muted"><%= event.category %> — <%= event.venue %> — <%= event.date %></p>
+<p><%= event.description %></p>
+<p><strong>$<%= event.price %></strong> per seat — <%= event.seatsAvailable %> seats available</p>
+
+<fieldset>
+  <legend>Book this event</legend>
+  <form action="/bookings" method="post">
+    <input type="hidden" name="eventId" value="<%= event.id %>">
+    <label>Your name: <input type="text" name="name" required></label><br><br>
+    <label>Seats: <input type="number" name="seats" min="1" value="1" required></label><br><br>
+    <button type="submit">Book now</button>
+  </form>
+</fieldset>
+
+<%- include('layout_bottom') %>

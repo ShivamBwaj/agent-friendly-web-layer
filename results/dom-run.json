@@ -1,0 +1,19 @@
+{
+  "mode": "dom",
+  "description": "12 tasks performed via the server-rendered multi-page UI only: navigate, read_page/screenshot, click, form_input. No direct API calls.",
+  "tasks": {
+    "T1": { "category": "search", "success": true, "agentActions": 6, "wastedActions": 1, "notes": "1 click failed on render timing, retried. Correct: Sourdough Baking Basics, $35." },
+    "T2": { "category": "filter", "success": true, "agentActions": 6, "wastedActions": 0, "notes": "Correct: Watercolor Landscapes ($28) only." },
+    "T3": { "category": "compare", "success": true, "agentActions": 8, "wastedActions": 1, "notes": "Had to scan all 10 checkboxes and find the submit button in a second pass. Correct: Classical Guitar Recital ($18) cheaper." },
+    "T4": { "category": "book", "success": true, "agentActions": 7, "wastedActions": 1, "notes": "1 click failed on render timing, retried. Booking #1 correct." },
+    "T5": { "category": "update", "success": true, "agentActions": 10, "wastedActions": 2, "notes": "Navigate to /bookings, fill name-lookup form, re-read page to find the now-rendered inline form, submit. 2 render-timing click failures." },
+    "T6": { "category": "cancel", "success": true, "agentActions": 3, "wastedActions": 0, "notes": "Cheapest task: Cancel button already on-screen from T5's result." },
+    "T7": { "category": "create+lookup", "success": true, "agentActions": 6, "wastedActions": 1, "notes": "Booking id came back on the confirmation page directly." },
+    "T8": { "category": "book-recovery", "success": true, "agentActions": 13, "wastedActions": 1, "recoveryActions": 6, "notes": "1st attempt (15 seats) returned a bare plain-text error page with no form to retry from ('Booking failed: not enough seats available') -- had to re-navigate to the event page from scratch and refill the whole form to recover. 2nd attempt (10 seats) succeeded as booking #3." },
+    "T9": { "category": "cancel-recovery", "success": "partial", "agentActions": 10, "wastedActions": 2, "notes": "1st cancel succeeded. The 2nd cancel-attempt sub-task could not be performed as designed: once a booking is cancelled, the DOM template stops rendering its Cancel button entirely (confirmed via find(), 0 matches). The UI prevents the invalid action proactively instead of letting the agent attempt it and fail. Correct answer becomes 'the interface does not expose a way to attempt this,' which is a different (and arguably harder-to-report) outcome than a reactive error." },
+    "T10": { "category": "update-recovery", "success": "partial", "agentActions": 1, "wastedActions": 0, "notes": "Same guard as T9: the Update form is also hidden once status != 'confirmed' (confirmed via find(), 0 matches for 'Update'). Task is structurally unreachable through the DOM UI's own affordances." },
+    "T11": { "category": "compare-recovery", "success": true, "agentActions": 14, "wastedActions": 1, "notes": "1st attempt (1 checkbox) correctly showed 'Select at least two events to compare.' 2nd attempt (2 checkboxes) succeeded: Improv for Beginners ($20) cheaper than Intro to Woodworking ($60)." },
+    "T12": { "category": "filter", "success": true, "agentActions": 6, "wastedActions": 0, "notes": "Correct: Classical Guitar Recital ($18) only." }
+  },
+  "totals": { "tasks": 12, "successes": 10, "partial": 2, "agentActions": 90, "wastedActions": 10, "httpRequests": 30, "httpFailed": 1, "wallClockMs": 493887 }
+}

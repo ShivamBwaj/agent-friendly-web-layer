@@ -1,0 +1,20 @@
+{
+  "mode": "api",
+  "description": "12 tasks performed purely via the agent-native capability layer: one manifest fetch, then structured HTTP calls per task. No browser involved.",
+  "discovery": { "action": "GET /api/manifest", "agentActions": 1, "notes": "One-time capability discovery, amortized across all 12 tasks." },
+  "tasks": {
+    "T1": { "category": "search", "success": true, "agentActions": 1, "wastedActions": 0, "notes": "Correct in one call." },
+    "T2": { "category": "filter", "success": true, "agentActions": 1, "wastedActions": 0, "notes": "Correct in one call." },
+    "T3": { "category": "compare", "success": true, "agentActions": 1, "wastedActions": 0, "notes": "Correct in one call, no need to page through the event list." },
+    "T4": { "category": "book", "success": true, "agentActions": 1, "wastedActions": 0, "notes": "Booking id returned directly in the response body." },
+    "T5": { "category": "update", "success": true, "agentActions": 1, "wastedActions": 0, "notes": "Id already known from T4's response, no lookup call needed." },
+    "T6": { "category": "cancel", "success": true, "agentActions": 1, "wastedActions": 0, "notes": "Single call." },
+    "T7": { "category": "create+lookup", "success": true, "agentActions": 1, "wastedActions": 0, "notes": "New booking id returned directly." },
+    "T8": { "category": "book-recovery", "success": true, "agentActions": 2, "wastedActions": 0, "recoveryActions": 1, "notes": "1st call returned structured {error: 'not enough seats available'} with HTTP 400 -- no page to re-navigate, just re-call with corrected seats. 2nd call succeeded as booking #3." },
+    "T9": { "category": "cancel-recovery", "success": true, "agentActions": 2, "wastedActions": 0, "notes": "1st DELETE succeeded. 2nd DELETE correctly returned {error: 'already cancelled'} with HTTP 400 -- unlike the DOM UI, the API happily accepts the malformed request and hands back a diagnosable reason." },
+    "T10": { "category": "update-recovery", "success": true, "agentActions": 1, "wastedActions": 0, "notes": "PATCH on the cancelled booking correctly returned {error: 'booking not active'} with HTTP 400." },
+    "T11": { "category": "compare-recovery", "success": "partial", "agentActions": 2, "wastedActions": 0, "notes": "FINDING: unlike the DOM route, /api/capabilities/compare has no 'at least 2 ids' validation. The 1-id call returned HTTP 200 with a 1-item array and no error field -- the agent has to notice the array length itself rather than being told. 2nd call (2 ids) succeeded: Improv for Beginners ($20) cheaper. This is a real gap in the capability layer's input validation, not fixed post-hoc so the benchmark stays honest." },
+    "T12": { "category": "filter", "success": true, "agentActions": 1, "wastedActions": 0, "notes": "Correct in one call." }
+  },
+  "totals": { "tasks": 12, "successes": 11, "partial": 1, "agentActions": 16, "wastedActions": 0, "httpRequests": 16, "httpFailed": 3, "wallClockMs": 51724 }
+}

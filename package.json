@@ -1,0 +1,13 @@
+{
+  "name": "agent-friendly-weblayer",
+  "version": "1.0.0",
+  "description": "Benchmark: DOM browsing agent vs agent-native capability API on the same app",
+  "main": "server/index.js",
+  "scripts": {
+    "start": "node server/index.js"
+  },
+  "dependencies": {
+    "ejs": "^3.1.10",
+    "express": "^4.19.2"
+  }
+}

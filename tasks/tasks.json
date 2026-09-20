@@ -1,0 +1,14 @@
+[
+  { "id": "T1", "category": "search", "goal": "Find the event about sourdough baking and report its price." , "expected": "Sourdough Baking Basics, $35" },
+  { "id": "T2", "category": "filter", "goal": "List all workshop-category events priced under $30.", "expected": "Watercolor Landscapes ($28) only" },
+  { "id": "T3", "category": "compare", "goal": "Compare 'Jazz on the Rooftop' and 'Classical Guitar Recital' and report which is cheaper.", "expected": "Classical Guitar Recital ($18) is cheaper than Jazz on the Rooftop ($45)" },
+  { "id": "T4", "category": "book", "goal": "Book 2 seats at 'Beginner Rock Climbing' under the name 'Alex Doe'.", "expected": "booking exists: eventId=8, seats=2, name=Alex Doe, status=confirmed" },
+  { "id": "T5", "category": "update", "goal": "Find Alex Doe's rock climbing booking and change it to 3 seats.", "expected": "booking seats updated to 3", "depends_on": "T4" },
+  { "id": "T6", "category": "cancel", "goal": "Cancel Alex Doe's rock climbing booking.", "expected": "booking status=cancelled, seats released back to event", "depends_on": "T5" },
+  { "id": "T7", "category": "create+lookup", "goal": "Book 1 seat at 'Stand-Up Comedy Open Mic' under the name 'Priya Shah', then report the new booking's id.", "expected": "booking created for eventId=5, seats=1, name=Priya Shah; id reported" },
+  { "id": "T8", "category": "book-recovery", "goal": "Try to book 15 seats at 'Beginner Rock Climbing' (only 10 available) under the name 'Jordan Lee'. When that fails, book the maximum available (10) instead.", "expected": "1st attempt rejected: not enough seats available. 2nd attempt succeeds: eventId=8, seats=10, name=Jordan Lee." },
+  { "id": "T9", "category": "cancel-recovery", "goal": "Cancel Jordan Lee's booking, then attempt to cancel it a second time and report what happens.", "expected": "1st cancel succeeds. 2nd cancel rejected: already cancelled. Agent must report this, not silently retry.", "depends_on": "T8" },
+  { "id": "T10", "category": "update-recovery", "goal": "Try to change Jordan Lee's (now-cancelled) booking to 5 seats and report what happens.", "expected": "rejected: booking not active. Agent must recognize the operation cannot succeed and report why.", "depends_on": "T9" },
+  { "id": "T11", "category": "compare-recovery", "goal": "Try to compare just 'Intro to Woodworking' alone first. When that doesn't produce a usable comparison, add 'Improv for Beginners' and complete it, reporting which is cheaper.", "expected": "1st attempt (1 id) rejected/unusable: need at least two. 2nd attempt (2 ids) succeeds: Improv for Beginners ($20) is cheaper than Intro to Woodworking ($60)." },
+  { "id": "T12", "category": "filter", "goal": "Find music-category events priced $20 or under.", "expected": "Classical Guitar Recital ($18) only" }
+]

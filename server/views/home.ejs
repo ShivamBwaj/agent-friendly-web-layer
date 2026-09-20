@@ -1,0 +1,34 @@
+<%- include('layout_top', { title: 'Home' }) %>
+
+<h1>QuickBook</h1>
+<p>Find things to do around town and book a spot.</p>
+
+<fieldset>
+  <legend>Search</legend>
+  <form action="/events" method="get">
+    <input type="text" name="q" placeholder="Search events...">
+    <button type="submit">Search</button>
+  </form>
+</fieldset>
+
+<fieldset>
+  <legend>Filter</legend>
+  <form action="/events" method="get">
+    <label>Category:
+      <select name="category">
+        <option value="">Any</option>
+        <option value="music">Music</option>
+        <option value="workshop">Workshop</option>
+        <option value="comedy">Comedy</option>
+        <option value="sports">Sports</option>
+      </select>
+    </label>
+    <label>Max price: <input type="number" name="maxPrice"></label>
+    <label>Date: <input type="date" name="date"></label>
+    <button type="submit">Apply filters</button>
+  </form>
+</fieldset>
+
+<p><a href="/events">Browse all events &rarr;</a></p>
+
+<%- include('layout_bottom') %>

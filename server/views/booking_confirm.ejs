@@ -1,0 +1,7 @@
+<%- include('layout_top', { title: 'Booking confirmed' }) %>
+
+<h1>Booking confirmed</h1>
+<p>Booking #<%= booking.id %> for <%= booking.seats %> seat(s) at <strong><%= event.title %></strong>, under the name <%= booking.name %>.</p>
+<p><a href="/bookings?name=<%= encodeURIComponent(booking.name) %>">View my bookings &rarr;</a></p>
+
+<%- include('layout_bottom') %>
