@@ -10,7 +10,6 @@ A benchmark, not a demo: how much does exposing a website's operations as struct
 - **`tasks/tasks.json`** — the 12-task benchmark suite: 7 base operations plus 5 error-recovery/edge-case tasks
 - **`results/`** — raw per-task and per-request logs from an actual run in each mode
 - **`RESULTS.md`** — the write-up: methodology, metrics, what drove the gap, and honest limitations
-- **`docs/INTERVIEW_PREP.md`** — the design decisions behind this project, why each one was made, and how to talk about the metrics
 
 ## Run it
 
