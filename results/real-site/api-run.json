@@ -1,0 +1,13 @@
+{
+  "mode": "api",
+  "site": "https://automationexercise.com",
+  "description": "Same 4 tasks against the site's own documented public API (https://automationexercise.com/api_list), which the site publishes precisely so it can be automated against -- no reverse-engineering or undocumented endpoint use.",
+  "tasks": {
+    "RT1": { "category": "search", "success": true, "agentActions": 1, "wastedActions": 0, "notes": "POST /api/searchProduct search_product=dress -- correct, 9 results, matches DOM exactly." },
+    "RT2": { "category": "filter/browse", "success": true, "agentActions": 1, "wastedActions": 0, "notes": "GET /api/productsList (one call), then filtered the response locally for category.usertype=='Women' && category.category=='Dress'. Correct: same 3 products as DOM." },
+    "RT3": { "category": "filter/browse (brand)", "success": true, "agentActions": 0, "wastedActions": 0, "notes": "Answered from the SAME productsList response already fetched for RT2 -- filtered locally for brand=='Polo'. Zero additional HTTP calls. Correct: same 6 Polo products as DOM." },
+    "RT4": { "category": "product detail", "success": true, "agentActions": 0, "wastedActions": 0, "notes": "Also answered from the same cached productsList response by looking up id==1. Correct: Blue Top, Rs. 500, Polo -- matches DOM exactly." }
+  },
+  "totals": { "tasks": 4, "successes": 4, "agentActions": 2, "wastedActions": 0, "httpRequests": 2 },
+  "finding": "One GET /api/productsList response contains brand and category metadata for every product, so it alone answers RT2, RT3, and RT4. The DOM product-listing page does not surface brand/category as visible text on the listing view -- that information only becomes visible per-product-detail-page or per-category-page, which is why the DOM agent had to make 3 separate navigations for what the API answered from 1 cached response."
+}

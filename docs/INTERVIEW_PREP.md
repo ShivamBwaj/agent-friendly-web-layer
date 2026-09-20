@@ -70,6 +70,16 @@ Script an actual multi-trial harness: N independent LLM agents (same model, temp
 **"You built the app and graded your own recovery tasks — isn't that circular?"**
 Partly, yes, and I say so in the limitations section. What isn't circular is the two asymmetries: I didn't design T9/T10 expecting the DOM UI to hide its buttons, and I didn't design T11 expecting the API to skip validation — both were discovered live during the run, not engineered in advance. That's the difference between "I proved what I set out to prove" and "I found something I wasn't looking for," and it's worth saying explicitly if asked.
 
+## Why I added a real external site instead of stopping at the demo app
+
+**Decision:** ran a smaller, 4-task, read-only benchmark against automationexercise.com, a live third-party site, in addition to the controlled demo app.
+
+**Why:** the strongest objection to the whole project is "you built both interfaces yourself, so of course the comparison favors your API." I can't fully answer that objection by building a better demo app — I can only answer it by leaving my own sandbox. I picked automationexercise.com specifically because it's a real site that (a) needs no login or payment for search/browse operations, so it doesn't require me to create accounts or touch payments — both hard no's regardless of what's technically possible — and (b) publishes an actual public API for the same catalog the UI shows, which is the one thing that made a real controlled comparison possible at all instead of "DOM automation with nothing to compare it to."
+
+**What this bought that the demo app couldn't:** two findings I did not engineer and could not have predicted. A live ad overlay intercepted two clicks mid-task (real ad inventory, not scripted) — that's a failure mode that only exists outside a sandbox. And the real API's `productsList` response turned out to carry enough metadata (brand + category per product) that one cached fetch answered three of the four tasks — a stronger version of the "structured responses substitute for navigation" finding from the demo app, arrived at completely independently. If asked "what did the real-site test add beyond confirming the same thing," lead with these two — they're not confirmations, they're new mechanisms.
+
+**What I'd say if pushed on rigor:** N=4 tasks, one run, and the 16x action-count ratio is noisier than the demo app's 5.6x — it's dominated by one outlier task (the ad-overlay incident). I say this directly in `RESULTS.md` rather than let the flashier number stand unqualified. The value of this run isn't the ratio, it's the two mechanisms.
+
 ## What's actually in the repo (so you can navigate it live if asked)
 
 - `server/store.js` — the one shared source of truth both interfaces read/write.
@@ -77,5 +87,6 @@ Partly, yes, and I say so in the limitations section. What isn't circular is the
 - `server/capabilities/manifest.js` + `server/capabilities/routes.js` — the agent-native layer: this *is* the "agent-friendly web layer" from the brief.
 - `server/logger.js` — request-level instrumentation (mode classification, latency, failure flag).
 - `tasks/tasks.json` — the 12-task suite with expected outcomes (T1–T7 base operations, T8–T12 recovery/edge cases).
-- `results/*.json` — raw per-task and per-request data from the actual run.
+- `results/*.json` — raw per-task and per-request data from the demo-app run.
+- `results/real-site/*.json` — the same methodology run against a real live external site (automationexercise.com), read-only tasks only.
 - `RESULTS.md` — the write-up, including the limitations section (read this before an interview, it's where the hard questions come from).

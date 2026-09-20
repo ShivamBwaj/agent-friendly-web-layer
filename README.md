@@ -30,4 +30,8 @@ curl "http://localhost:3000/api/capabilities/search?q=jazz"
 
 ## The headline result
 
-Same 12 tasks, same underlying app, same agent (me) driving both interfaces: **7.5 agent actions per task through the DOM UI vs. 1.3 through the agent-native API (5.6x fewer)**, and DOM interaction hit an **11.1% wasted-action rate** (render-timing races) that's structurally impossible over a JSON API. The 5 error-recovery tasks also surfaced two unplanned asymmetries — the DOM UI hides some invalid actions entirely (so the agent can't even attempt them), while the hand-built API layer had a real input-validation gap the UI didn't. Full breakdown, methodology, and caveats in [RESULTS.md](RESULTS.md).
+Same 12 tasks, same underlying app, same agent (me) driving both interfaces: **7.5 agent actions per task through the DOM UI vs. 1.3 through the agent-native API (5.6x fewer)**, and DOM interaction hit an **11.1% wasted-action rate** (render-timing races) that's structurally impossible over a JSON API. The 5 error-recovery tasks also surfaced two unplanned asymmetries — the DOM UI hides some invalid actions entirely (so the agent can't even attempt them), while the hand-built API layer had a real input-validation gap the UI didn't.
+
+**A second, smaller run against a real live external site** (automationexercise.com, chosen because it publishes a genuine public API and needs no login/payment for browse/search) confirmed the same direction off my own turf, and surfaced two new mechanisms: a real third-party ad overlay intercepted clicks mid-task (a failure mode no sandboxed demo app can produce), and a single cached API response answered 3 of 4 tasks because it carried metadata the rendered page didn't show as visible text.
+
+Full breakdown, methodology, and caveats in [RESULTS.md](RESULTS.md).

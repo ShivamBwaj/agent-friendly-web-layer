@@ -1,0 +1,12 @@
+{
+  "mode": "dom",
+  "site": "https://automationexercise.com",
+  "description": "4 read-only tasks against a real, live, external e-commerce site built specifically for automation practice. DOM mode used only browser navigation, clicks, and page reads -- no login, no cart, no checkout, no scraping beyond these 4 tasks.",
+  "tasks": {
+    "RT1": { "category": "search", "success": true, "agentActions": 5, "wastedActions": 0, "notes": "Searched 'dress' via the Products page search box. Correct: 9 results." },
+    "RT2": { "category": "filter/browse", "success": true, "agentActions": 6, "wastedActions": 0, "notes": "Expanded Women category, clicked the Dress subcategory link. Correct: 3 products (Sleeveless Dress, Stylish Dress, Rose Pink Embroidered Maxi Dress)." },
+    "RT3": { "category": "filter/browse (brand)", "success": true, "agentActions": 19, "wastedActions": 6, "notes": "UNPLANNED REAL-WORLD FRICTION: a live third-party ad overlay (first a blank ad unit, then a Texas Instruments recruitment ad) covered the sidebar and silently absorbed two consecutive clicks on the 'Polo' brand link -- confirmed visually via screenshot, not inferable from the accessibility tree alone. Closing the stacked ad units did not reliably clear the way. Recovered by navigating directly to /brand_products/Polo, a URL already known from an earlier read_page href. Final answer correct: 6 Polo products. This kind of obstacle cannot occur in a controlled demo app and would not show up in a benchmark run only against one's own test site." },
+    "RT4": { "category": "product detail", "success": true, "agentActions": 2, "wastedActions": 0, "notes": "Navigated directly to /product_details/1 using a URL pattern already observed from an earlier page read, rather than clicking a 'View Product' link -- a minor methodological shortcut, noted rather than hidden. Correct: Blue Top, Rs. 500, brand Polo." }
+  },
+  "totals": { "tasks": 4, "successes": 4, "agentActions": 32, "wastedActions": 6 }
+}
