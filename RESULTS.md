@@ -52,6 +52,8 @@ I acted as the agent in both conditions — DOM mode using only browser tool cal
 
 Raw per-task data: [results/dom-run.json](results/dom-run.json), [results/api-run.json](results/api-run.json). Raw HTTP logs: [results/dom-http-log.json](results/dom-http-log.json), [results/api-http-log.json](results/api-http-log.json).
 
+![Bar chart of agent actions per task, all 12 tasks, DOM UI vs agent-native API](assets/actions-per-task.png)
+
 ## What actually drove the gap
 
 1. **Discovery cost.** The DOM agent has to *find* the affordance every time — read the page, locate the right form, sometimes locate the submit button in a second pass because it wasn't in the first accessibility-tree read (T3, T11). The API agent reads one manifest once and then knows every operation's name, method, and parameters for the rest of the session.

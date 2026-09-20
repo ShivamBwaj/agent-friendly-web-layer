@@ -2,6 +2,8 @@
 
 A benchmark, not a demo: how much does exposing a website's operations as structured, agent-native capabilities (a WebMCP-style layer) actually save an AI agent, compared to driving the same site through its rendered HTML?
 
+![Summary: 6.8x fewer agent actions, 13.1% to 0% wasted actions, 16x fewer confirmed on a real external site](assets/summary.png)
+
 ## What's here
 
 - **`server/`** — QuickBook, a small event-booking app with one shared backend (`store.js`) exposed two ways:

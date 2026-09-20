@@ -2,4 +2,3 @@ node_modules/
 logs/*.jsonl
 docs/INTERVIEW_PREP.md
 .playwright-mcp/
-linkedin_chart.png
