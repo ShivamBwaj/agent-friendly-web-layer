@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Agent-Friendly Web Layer — DOM agent vs. agent-native API benchmark</title>
+<meta name="description" content="A benchmark measuring how much a structured agent-native API actually saves an AI agent, compared to driving the same site through its rendered HTML. 16 tasks, two runs, real numbers.">
+<link rel="icon" href="data:,">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700;800&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="scanlines" aria-hidden="true"></div>
+
+<header class="topbar">
+  <div class="wrap topbar-inner">
+    <span class="brand">AGENT_FRIENDLY_WEB_LAYER<span class="cursor">_</span></span>
+    <a class="ghlink" href="https://github.com/ShivamBwaj/agent-friendly-web-layer" target="_blank" rel="noopener">
+      view source &#8599;
+    </a>
+  </div>
+</header>
+
+<main>
+
+  <section class="hero wrap">
+    <p class="kicker">// benchmark log — not a demo</p>
+    <h1>Does a structured API actually<br>help an AI agent more than a browser?</h1>
+    <p class="lede">I built one app with two interfaces, ran 16 tasks through both, and measured what happened — including the parts that didn't go the way I expected.</p>
+
+    <div class="stat-row">
+      <div class="stat">
+        <span class="stat-num">6.8x</span>
+        <span class="stat-label">fewer agent actions per task</span>
+      </div>
+      <div class="stat">
+        <span class="stat-num accent-a">13.1% &rarr; 0%</span>
+        <span class="stat-label">wasted-action rate, DOM &rarr; API</span>
+      </div>
+      <div class="stat">
+        <span class="stat-num accent-b">16x</span>
+        <span class="stat-label">confirmed on a real live external site</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="wrap section">
+    <h2><span class="idx">01</span> the setup</h2>
+    <div class="two-col">
+      <div class="spec-card">
+        <div class="spec-tag dom">DOM UI</div>
+        <p>A classic server-rendered, multi-page app. Forms, links, real page navigations. No client-side JS. This is what a browsing agent — screenshot, accessibility tree, click, type — has to work with.</p>
+      </div>
+      <div class="spec-card">
+        <div class="spec-tag api">AGENT-NATIVE API</div>
+        <p>A small "agent-friendly web layer": a JSON manifest describing every capability — search, filter, compare, book, update, cancel — each a single structured HTTP call.</p>
+      </div>
+    </div>
+    <p class="note">Same backend, same data, both interfaces read and write the same store — so any measured difference comes from the interface, not from inconsistent business logic. I acted as the agent myself in both conditions, holding the reasoning constant so the interface is the only variable.</p>
+  </section>
+
+  <section class="wrap section">
+    <h2><span class="idx">02</span> the numbers</h2>
+    <figure class="chart-figure">
+      <img src="assets/summary.png" alt="Summary: 6.8x fewer agent actions per task, 13.1% to 0% wasted-action rate, 16x fewer confirmed on a real external site" loading="lazy">
+    </figure>
+
+    <table class="data-table">
+      <thead>
+        <tr><th>run</th><th>tasks</th><th>DOM actions</th><th>API actions</th><th>actions / task</th><th>reduction</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>demo app</td><td>12</td><td>90</td><td>16</td><td>7.5 &rarr; 1.3</td><td class="accent-b">5.6x</td></tr>
+        <tr><td>real external site</td><td>4</td><td>32</td><td>2</td><td>8.0 &rarr; 0.5</td><td class="accent-b">16x</td></tr>
+        <tr class="total-row"><td>combined</td><td>16</td><td>122</td><td>18</td><td>7.6 &rarr; 1.1</td><td class="accent-b">~6.8x</td></tr>
+      </tbody>
+    </table>
+
+    <figure class="chart-figure">
+      <img src="assets/actions-per-task.png" alt="Bar chart of agent actions per task across all 12 demo-app tasks, DOM UI versus agent-native API" loading="lazy">
+    </figure>
+  </section>
+
+  <section class="wrap section">
+    <h2><span class="idx">03</span> what actually drove it</h2>
+    <ul class="finding-list">
+      <li><strong>Discovery cost.</strong> The DOM agent has to find the right form every time. The API agent reads one manifest once and knows every operation for the rest of the session.</li>
+      <li><strong>Implicit vs. explicit state.</strong> A DOM confirmation page shows a booking id as text. An API response returns it as a field the agent can hold onto — cutting out a whole lookup round-trip on every follow-up action.</li>
+      <li><strong>Render-timing races are a DOM-only failure mode.</strong> A page read returning empty before it finished drawing, a click landing before the tab rendered — structurally impossible over JSON. There's no such thing as a half-rendered API response.</li>
+    </ul>
+  </section>
+
+  <section class="wrap section highlight">
+    <h2><span class="idx">04</span> the two things I didn't expect</h2>
+
+    <div class="asym">
+      <h3>The DOM UI sometimes prevents an agent from even trying</h3>
+      <p>Once a booking is cancelled, its Update/Cancel buttons stop rendering — confirmed with a zero-match search on the page. "Cancel it a second time" isn't a DOM-agent failure, it's an action the interface never offers. The API has no such guard: it accepts the request and returns a clean, structured <code>{"error": "already cancelled"}</code>. Same rule, two opposite strategies — preventive for a human, reactive-and-diagnosable for an agent.</p>
+    </div>
+
+    <div class="asym">
+      <h3>My own API had a validation gap the UI didn't</h3>
+      <p>The DOM route checks for at least two items before comparing. My hand-built API endpoint doesn't — it returns <code>200 OK</code> on an incomplete comparison with no error at all. I found this live, during the benchmark, and left it in rather than patching it after the fact. Shared backend logic does not give you shared input validation for free.</p>
+    </div>
+  </section>
+
+  <section class="wrap section">
+    <h2><span class="idx">05</span> then I left the sandbox</h2>
+    <p>Everything above is on an app I built myself — the obvious objection is "of course it favors your API, you control both sides." So I ran the same methodology against <a href="https://automationexercise.com" target="_blank" rel="noopener">a real, live, third-party site</a> built for automation practice — no login, no payment, using its own published public API.</p>
+    <p>Two things came out of that run that a sandboxed demo app structurally could not have produced:</p>
+    <ul class="finding-list">
+      <li>A live third-party <strong>ad overlay silently intercepted two clicks</strong> mid-task — invisible to the accessibility tree, only caught by taking a screenshot.</li>
+      <li>One cached API response answered three of four tasks, because it carried metadata the rendered page never showed as visible text — a browsing agent needed three separate page loads for what one JSON response already contained.</li>
+    </ul>
+  </section>
+
+  <section class="wrap section cta">
+    <h2>read the whole thing</h2>
+    <p>Full methodology, raw per-task logs, and the honest limitations section (including exactly where this benchmark is noisy) are in the repo.</p>
+    <a class="btn" href="https://github.com/ShivamBwaj/agent-friendly-web-layer" target="_blank" rel="noopener">github.com/ShivamBwaj/agent-friendly-web-layer &#8599;</a>
+  </section>
+
+</main>
+
+<footer class="wrap">
+  <p>Built as a research benchmark, not a product pitch. Every number here traces to a committed JSON file in the repo.</p>
+</footer>
+
+</body>
+</html>
