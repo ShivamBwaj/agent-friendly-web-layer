@@ -1,5 +1,15 @@
 # Agent-Friendly Web Layer — Benchmark Results
 
+## Summary tabulation
+
+Two runs, same methodology, same agent (me) driving both interface conditions in each:
+
+| Run | What was tested | Tasks | DOM actions | API actions | Actions/task (DOM → API) | Reduction | Wasted-action rate (DOM → API) |
+|---|---|---|---|---|---|---|---|
+| 1. Demo app (QuickBook) | Own app, one shared backend, classic multi-page UI vs. WebMCP-style capability API | 12 | 90 | 16 | 7.5 → 1.3 | **5.6x** | 11.1% → 0% |
+| 2. Real external site | automationexercise.com's rendered UI vs. its own published public API | 4 | 32 | 2 | 8.0 → 0.5 | **16x** | 18.8% → 0% |
+| **Combined** | — | **16** | **122** | **18** | **7.6 → 1.1** | **~6.8x** | **13.1% → 0%** |
+
 ## Setup
 
 One demo app, "QuickBook" (an event-booking site), with identical business logic exposed through two interaction surfaces:

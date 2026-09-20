@@ -1,5 +1,26 @@
 # Interview Walkthrough: Agent-Friendly Web Layer
 
+## Tabulation: what was done, and what it improved
+
+Two separate runs, same methodology, same agent (me) driving both interface conditions each time.
+
+| Phase | What we did | Environment | Tasks | DOM actions | API actions | Actions/task (DOM → API) | Reduction | Wasted-action rate (DOM → API) |
+|---|---|---|---|---|---|---|---|---|
+| 1. Controlled demo app | Built QuickBook (Node/Express) — one shared backend exposed as a classic multi-page UI *and* a WebMCP-style capability API (`/api/manifest` + 7 endpoints) | My own sandboxed app | 12 (7 base ops + 5 error-recovery) | 90 | 16 | 7.5 → 1.3 | **5.6x fewer** | 11.1% → 0% |
+| 2. Real external site | Ran the same 4 read-only task types against a live third-party site's rendered UI and its own published public API — no code written, no login, no payment | automationexercise.com (not mine) | 4 (search, category-browse, brand-browse, product-lookup) | 32 | 2 | 8.0 → 0.5 | **16x fewer** | 18.8% → 0% |
+| **Combined** | — | — | **16 tasks** | **122** | **18** | **7.6 → 1.1** | **~6.8x fewer** | **13.1% → 0%** |
+
+What each phase actually contributed, concretely:
+
+| Phase | New mechanism found | Why it matters |
+|---|---|---|
+| 1 | Render-timing races (`read_page` returning empty, clicks failing pre-render) are a DOM-only failure class | Structurally impossible over JSON — no such thing as a half-rendered API response |
+| 1 | Implicit vs. explicit state: DOM confirmation pages show an id as text; API responses return it as a field | Cuts out an entire lookup round-trip on every follow-up operation (update/cancel) |
+| 1 | DOM UI can *hide* invalid actions (button disappears); API returns them as diagnosable errors | Same validation rule, two opposite strategies — reactive errors are more agent-legible |
+| 1 | Hand-built API had a validation gap the UI didn't (`compare` with 1 id silently "succeeds") | Shared backend logic ≠ shared input validation; each entry point needs its own checks |
+| 2 | A live ad overlay silently intercepted two clicks mid-task | A failure mode that cannot exist in a sandboxed demo — only found by leaving it |
+| 2 | One cached API response (`productsList`) answered 3 of 4 tasks via inline metadata the rendered page never shows as text | A richer response can substitute for multiple navigations — a distinct mechanism from phase 1's id-in-response finding |
+
 ## 30-second pitch (say this first if asked "what did you build")
 
 "I built a benchmark comparing two ways an AI agent can operate a website: clicking around the rendered HTML like a human, versus calling a small set of structured 'capabilities' — search, filter, compare, book, update, cancel — exposed as a documented API, in the spirit of WebMCP. Same app, same underlying data and business logic, two interfaces, 12 tasks including five specifically designed around error recovery. The structured layer bought about 5.6x fewer agent actions per task and eliminated an entire class of failure — render-timing races — that only exist when the agent has to wait for a screen to draw. But the more interesting part is two asymmetries the recovery tasks surfaced: the DOM UI actually *prevents* some invalid actions by hiding the button entirely, while my hand-built API layer had a real validation gap the UI didn't. Neither interface won cleanly — that nuance is the actual finding."
@@ -50,11 +71,13 @@ Do **not** lead with the latency numbers in an interview — if you cite them wi
 
 **The API layer has a validation gap the DOM route doesn't (T11).** `/compare` on the DOM side explicitly checks for at least 2 ids. `/api/capabilities/compare` doesn't — send it 1 id and it returns HTTP 200 with a 1-item array, no error, nothing telling the agent the comparison is incomplete. I built both interfaces and still let one drift out of sync with the other. I did not go back and patch it once I saw the asymmetry — leaving it in is the honest result, and it's a genuinely useful lesson: shared backend logic does not give you shared input validation for free, each entry point needs its own checks. If an interviewer asks "did you fix that bug," the answer is "no, on purpose — patching it after finding it during the benchmark would have quietly improved the API's numbers using information a real agent wouldn't have had going in."
 
-## Resume bullets (pick one or two, don't use all three — depth beats breadth)
+## Resume bullets (pick two or three, don't use all five — depth beats breadth)
 
 - Designed and built a controlled benchmark comparing DOM-based browser automation against a structured "agent-native" capability API (WebMCP-style) on an identical backend across 12 tasks including dedicated error-recovery scenarios, finding a 5.6x reduction in agent actions per task and elimination of render-timing failure modes.
 - Built a dual-interface demo application (Node/Express) exposing identical business logic through both a classic server-rendered UI and a documented JSON capability manifest, to isolate interface effects on AI agent task performance from confounds like model choice or business-logic drift.
 - Instrumented request-level telemetry (latency, failure classification, action attribution) to produce reproducible, artifact-backed metrics, and identified two unplanned validation asymmetries between the two interfaces by designing tasks that specifically forced error paths rather than only testing happy-path scenarios.
+- Validated the benchmark's findings against a live, third-party production site (not self-built) using its published public API, confirming the same direction of effect (16x fewer agent actions) and surfacing two additional real-world failure/efficiency mechanisms — an ad overlay intercepting clicks, and a single API response substituting for multiple page navigations — that a sandboxed demo app could not have produced.
+- Across 16 tasks spanning a controlled demo app and a real external site, measured a combined ~6.8x reduction in agent actions per task and full elimination of tooling-level failure modes (render races, click interception) when operating through a structured API instead of a browser.
 
 ## Questions an interviewer will probably ask, and the honest answer
 
